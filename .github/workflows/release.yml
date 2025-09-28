@@ -81,7 +81,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ASGARDIO_GITHUB_BOT_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       
-      - name: Create samples zip file
+      - name: Prepare sample apps for upload
         run: |
           mkdir -p /tmp/samples
           
@@ -89,15 +89,19 @@ jobs:
           cp -r samples/asgardeo-choreo-react-express /tmp/samples/
 
           cd /tmp
-          zip -r asgardeo-samples.zip samples \
+          zip -r asgardeo-react-app.zip samples/asgardeo-react-app \
+            -x "**/node_modules/**" "**/.git/**"
+          zip -r asgardeo-choreo-react-express.zip samples/asgardeo-choreo-react-express \
             -x "**/node_modules/**" "**/.git/**"
 
-          mv asgardeo-samples.zip $GITHUB_WORKSPACE/
+          mv asgardeo-react-app.zip $GITHUB_WORKSPACE/
+          mv asgardeo-choreo-react-express.zip $GITHUB_WORKSPACE/
 
       - name: Upload to GitHub Release
+        if: steps.changesets.outputs.published == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          files: asgardeo-samples.zip
-          tag_name: ${{ inputs.tag || github.event.release.tag_name }}
+          files: asgardeo-react-app.zip, asgardeo-choreo-react-express.zip
+          tag_name: ${{ steps.changesets.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
