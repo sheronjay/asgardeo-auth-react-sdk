@@ -101,7 +101,9 @@ jobs:
         if: steps.changesets.outputs.published == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          files: asgardeo-react-app.zip, asgardeo-choreo-react-express.zip
+          files: |
+          asgardeo-react-app.zip
+          asgardeo-choreo-react-express.zip
           tag_name: ${{ steps.changesets.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
