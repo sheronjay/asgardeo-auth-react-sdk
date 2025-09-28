@@ -76,6 +76,7 @@ jobs:
 
       - name: Create Release Pull Request or Publish
         id: changesets
+        if: github.repository == 'asgardeo/asgardeo-auth-react-sdk' && github.event_name != 'release'
         uses: changesets/action@v1
         with:
           publish: yarn publish:packages
